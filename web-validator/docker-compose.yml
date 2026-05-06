@@ -1,0 +1,35 @@
+# Blog Engine Web Validator — docker-compose 패키지
+#
+# 다른 AI 웹 개발자에게 가이드와 함께 전달하여 환경 차이 변명 불가.
+# 사용:
+#   1. cp -r tools/web-validator <your-web-repo>/web-validator
+#   2. cd web-validator && docker compose up
+#   3. TARGET_URL 환경변수로 검증 대상 지정
+#
+# 통과 기준:
+#   - Playwright E2E: User Journey 시나리오 100% (web-handoff.md User Journey 표 기준)
+#   - axe-core a11y: violation 0
+#   - Lighthouse: A11y 90+ / Best Practices 90+ / Performance 80+
+#   - Visual Regression: 5장 (PC/모바일/빈/로딩/에러) baseline 일치
+#   - Token Lint: Tailwind 임의값 0
+#   - Dead Click: 클릭 후 시각/URL/DOM 변화 없는 버튼 0
+
+version: '3.8'
+
+services:
+  validator:
+    image: mcr.microsoft.com/playwright:v1.48.0-jammy
+    working_dir: /app
+    volumes:
+      - ./:/app
+      - ./reports:/app/reports
+    environment:
+      - TARGET_URL=${TARGET_URL:-http://host.docker.internal:3000}
+      - OWNER_TEST_USER_EMAIL=${OWNER_TEST_USER_EMAIL}
+      - OWNER_TEST_USER_PASSWORD=${OWNER_TEST_USER_PASSWORD}
+      - CLIENT_TEST_USER_EMAIL=${CLIENT_TEST_USER_EMAIL}
+      - CLIENT_TEST_USER_PASSWORD=${CLIENT_TEST_USER_PASSWORD}
+    command: >
+      sh -c "npm install && npm run validate"
+    extra_hosts:
+      - host.docker.internal:host-gateway

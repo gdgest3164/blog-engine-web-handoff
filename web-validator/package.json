@@ -1,0 +1,21 @@
+{
+  "name": "blog-engine-web-validator",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Blog Engine 웹 PR 자동 검증 환경 — 다른 AI 웹 개발자에게 가이드와 함께 전달.",
+  "scripts": {
+    "validate": "npm run e2e && npm run a11y && npm run lighthouse && npm run visual && npm run dead-click",
+    "e2e": "playwright test",
+    "a11y": "node ./run-axe.mjs",
+    "lighthouse": "lhci autorun --config=./lighthouse.config.cjs",
+    "visual": "playwright test --grep @visual",
+    "dead-click": "node ./dead-click-detector.mjs",
+    "docker:up": "docker compose up -d",
+    "docker:down": "docker compose down"
+  },
+  "dependencies": {
+    "@axe-core/playwright": "^4.10.0",
+    "@playwright/test": "^1.48.0",
+    "@lhci/cli": "^0.14.0"
+  }
+}

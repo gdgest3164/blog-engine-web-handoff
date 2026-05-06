@@ -1,0 +1,12 @@
+{
+  "name": "blog-engine-web-design-tokens",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Blog Engine 디자인 토큰 잠금 — Tailwind plugin + ESLint rule.",
+  "main": "./tailwind-plugin.cjs",
+  "files": [
+    "tokens.json",
+    "tailwind-plugin.cjs",
+    "eslint-rule.cjs"
+  ]
+}
