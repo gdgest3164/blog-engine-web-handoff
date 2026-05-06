@@ -47,6 +47,19 @@ RLS 정책 (PR 10 마이그 07):
 
 ## 3. 통신 채널 — Supabase 가 단일 진입점 (admin-api 외부 노출 X)
 
+### Schema 분리 (중요)
+- 신규 테이블: **`blog_engine`** 스키마 (`agent_decisions`, `post_blueprints`, `blog_profiles`, `compliance_findings`, `plagiarism_checks`, `post_assets`, `post_images` 등)
+- SaaS master: **`virin`** 스키마 그대로 (`viral_clients`, `blog_contents`, `blog_rank_snapshots`)
+- Supabase Dashboard > API > Settings 의 "Exposed schemas" 에 **`blog_engine`** 추가 필수 (1회 수동)
+- 클라이언트 호출:
+  ```ts
+  // 신규 테이블
+  supabase.schema('blog_engine').from('post_blueprints').select(...)
+  // SaaS master
+  supabase.schema('virin').from('viral_clients').select(...)
+  ```
+
+
 > ⚠️ **중요**: Virin 백엔드 서버 (admin-api :7317) 는 **외부 노출되지 않음**. 웹 개발 환경에서 직접 HTTP 호출 불가능.
 > → 양쪽 모두 Supabase 만 본다. Supabase 가 메시지 버스 + 데이터 저장 + 인증 + Storage 단일 채널.
 
